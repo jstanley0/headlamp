@@ -31,16 +31,6 @@
 #include "pwm.h"
 #include "io.h"
 
-void test_led()
-{
-    for(uint8_t i = 0; i < 4; ++i) {
-        PORTB |= (1 << LED_PORT);
-        sync_sleep(50);
-        PORTB &= ~(1 << LED_PORT);
-        sync_sleep(50);
-    }
-}
-
 ISR(PCINT0_vect)
 {
 }
@@ -53,7 +43,7 @@ void power_down()
     GIMSK |= (1 << PCIE);
 
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-    sleep_cpu();
+    sleep_mode();
 
     // we are awakened by a pin-change interrupt
 
@@ -67,10 +57,11 @@ void run_lamp()
 
     pwm_on();
     fade(0, bright);
+    get_input(1);
 
     for(;;) {
         sync_sleep(50);
-        uint8_t input = get_input();
+        uint8_t input = get_input(0);
         if (input == HOLD) {
             break;
         } else if (input == PRESS) {
@@ -92,10 +83,7 @@ void run_lamp()
 int main(void)
 {
     io_init();
-    sleep_enable();
     sei();
-
-    test_led();
 
     for(;;) {
         power_down();

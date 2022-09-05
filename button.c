@@ -3,12 +3,18 @@
 #include "button.h"
 #include "sync_sleep.h"
 
-#define REPEAT_THRESHOLD 15
+#define REPEAT_THRESHOLD 10
 
-uint8_t get_input()
+uint8_t get_input(int flush)
 {
     static uint8_t prevState = 0;
     static uint8_t repeat = 0;
+
+    if (flush) {
+        wait_for_button_release();
+        prevState = 0;
+        return 0;
+    }
 
     uint8_t curState = PINB & (1 << BUTTON_PORT);
 
