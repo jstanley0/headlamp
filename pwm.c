@@ -7,7 +7,7 @@ void pwm_on()
 {
     OCR0A = 0;
     TCCR0A = (1 << COM0A1) | (1 << WGM00) | (1 << WGM01); // non-inverting fast PWM mode 3
-    TCCR0B = (1 << CS00) | (1 << CS01); // 1/64 prescaler
+    TCCR0B = (1 << CS00); // 1/8 prescaler
 }
 
 void pwm_off()
