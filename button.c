@@ -3,7 +3,7 @@
 #include "button.h"
 #include "sync_sleep.h"
 
-#define REPEAT_THRESHOLD 10
+#define REPEAT_THRESHOLD 12
 
 uint8_t get_input(int flush)
 {
@@ -26,6 +26,7 @@ uint8_t get_input(int flush)
     }
 
     if (curState != prevState) {
+        repeat = 0;
         prevState = curState;
         if (curState == 0)
             return PRESS;
