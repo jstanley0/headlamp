@@ -20,15 +20,15 @@ static const uint8_t BRIGHTTABLE[] = {1, 6, 40, 255};
 
 void fade(int8_t from, int8_t to)
 {
-    uint8_t b = BRIGHTTABLE[from], a = b, e = BRIGHTTABLE[to];
-    int8_t d = to - from;
-    if (d > 0) {
-        for(; b < e && b >= a; b += d) {
+    uint8_t b = BRIGHTTABLE[from], e = BRIGHTTABLE[to];
+    int8_t s = (to == 3 || from == 3) ? 3 : 1;
+    if (b < e) {
+        for(; b <= e - s; b += s) {
             OCR0A = b;
             sync_sleep(1);
         }
-    } else if (d < 0) {
-        for(; b > e && b <= a; b += d) {
+    } else if (b > e) {
+        for(; b >= e + s; b -= s) {
             OCR0A = b;
             sync_sleep(1);
         }
