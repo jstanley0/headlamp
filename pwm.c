@@ -16,16 +16,22 @@ void pwm_off()
     PORTB &= ~(1 << LED_PORT);
 }
 
-static const uint8_t BRIGHTTABLE[] = {0, 1, 6, 40, 255};
+static const uint8_t BRIGHTTABLE[] = {1, 6, 40, 255};
 
-void fade(uint8_t from, uint8_t to)
+void fade(int8_t from, int8_t to)
 {
-    uint8_t dir = (from < to) ? 1 : -1;
-    if (from != to) {
-        for(uint8_t b = BRIGHTTABLE[from], e = BRIGHTTABLE[to]; b != e; b += dir) {
+    uint8_t b = BRIGHTTABLE[from], a = b, e = BRIGHTTABLE[to];
+    int8_t d = to - from;
+    if (d > 0) {
+        for(; b < e && b >= a; b += d) {
+            OCR0A = b;
+            sync_sleep(1);
+        }
+    } else if (d < 0) {
+        for(; b > e && b <= a; b += d) {
             OCR0A = b;
             sync_sleep(1);
         }
     }
-    OCR0A = BRIGHTTABLE[to];
+    OCR0A = e;
 }

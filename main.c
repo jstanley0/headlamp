@@ -53,7 +53,7 @@ void power_down()
 
 void run_lamp()
 {
-    static uint8_t bright = 1;
+    static int8_t bright = 0;
 
     pwm_on();
     fade(0, bright);
@@ -65,9 +65,9 @@ void run_lamp()
         if (input == HOLD) {
             break;
         } else if (input == PRESS) {
-            if (bright == 4) {
-                fade(bright, 1);
-                bright = 1;
+            if (bright == 3) {
+                fade(bright, 0);
+                bright = 0;
                 break;
             }
             fade(bright, bright + 1);
