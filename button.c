@@ -3,7 +3,7 @@
 #include "button.h"
 #include "sync_sleep.h"
 
-#define REPEAT_THRESHOLD 12
+#define REPEAT_THRESHOLD 8
 
 uint8_t get_input(int flush)
 {
@@ -36,6 +36,16 @@ uint8_t get_input(int flush)
     }
 
     return 0;
+}
+
+uint8_t is_button_really_pressed()
+{
+    for(uint8_t i = 0; i < 3; ++i) {
+        if (!(PINB & (1 << BUTTON_PORT)))
+            return 0;
+        sync_sleep(5);
+    }
+    return 1;
 }
 
 void wait_for_button_release()

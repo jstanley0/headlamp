@@ -42,10 +42,11 @@ void power_down()
     PCMSK = (1 << PCINT3);
     GIMSK |= (1 << PCIE);
 
-    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-    sleep_mode();
-
-    // we are awakened by a pin-change interrupt
+    do {
+        set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+        sleep_mode();
+        // we are awakened by a pin-change interrupt
+    } while (!is_button_really_pressed());
 
     GIMSK &= ~(1 << PCIE);
     PCMSK &= ~(1 << PCINT3);
