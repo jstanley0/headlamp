@@ -22,6 +22,10 @@
 // 2. PB3 (PCINT3): the button
 // 5. PB0 (OC0A): the LED
 
+// turn off after 20 minutes of inactivity
+// (I use this thing for short bursts; if you're using this for night trail runs, please change this)
+#define TIMEOUT_SECONDS 1200
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
@@ -55,17 +59,19 @@ void power_down()
 void run_lamp()
 {
     static int8_t bright = 0;
+    uint32_t timeout = 0;
 
     pwm_on();
     fade(0, bright);
     get_input(1);
 
-    for(;;) {
+    while(timeout < TIMEOUT_SECONDS * 20) {
         sync_sleep(50);
         uint8_t input = get_input(0);
         if (input == HOLD) {
             break;
         } else if (input == PRESS) {
+            timeout = 0;
             if (bright == 3) {
                 fade(bright, 0);
                 bright = 0;
@@ -74,6 +80,7 @@ void run_lamp()
             fade(bright, bright + 1);
             bright += 1;
         }
+        ++timeout;
     }
 
     fade(bright, 0);
