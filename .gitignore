@@ -1,4 +1,2 @@
-*.o
-*.elf
-*.hex
-.idea
+fp-info-cache
+*-bak
